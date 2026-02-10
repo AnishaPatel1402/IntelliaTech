@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,7 +38,10 @@ public class UserService {
 	}
 
 	@Transactional
-	@CacheEvict(value = {"users", "userList"}, allEntries = true)
+	@Caching(evict = {
+		    @CacheEvict(value = "users", key = "#id", beforeInvocation = true),
+		    @CacheEvict(value = "userList", allEntries = true, beforeInvocation = true)
+		})
 	public User deleteUser(int id) {
 		User dbUser = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found with id: " + id));
 		userRepository.deleteById(id);
@@ -45,8 +49,8 @@ public class UserService {
 	}
 
 	@Transactional
-	 @CachePut(value = "users", key = "#user.id")
-	 @CacheEvict(value = "userList", allEntries = true)
+	@CachePut(value = "users", key = "#user.id")          // update single user cache
+	@CacheEvict(value = "userList", allEntries = true, beforeInvocation = true)    // clear list cache
 	public User updateUser(User user) {
 		User dbUser = userRepository.findById(user.getId())
 				.orElseThrow(() -> new RuntimeException("User not found with id: " + user.getId()));
