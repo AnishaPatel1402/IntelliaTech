@@ -21,6 +21,7 @@ public class UserService {
 	}
 
 	@Transactional
+	@CachePut(value = "users", key = "#user.id") 
 	@CacheEvict(value = "userList", allEntries = true)
 	public User createUser(User user) {
 		return userRepository.save(user);
