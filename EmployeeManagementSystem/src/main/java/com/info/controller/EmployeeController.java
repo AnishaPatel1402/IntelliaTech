@@ -71,7 +71,37 @@ public class EmployeeController {
 	    if (list.isEmpty()) {
 	        return ResponseEntity.noContent().build();
 	    }
+	    return ResponseEntity.ok(list);
+	}
+	
+	@GetMapping("/by-department/{dept}")
+	public ResponseEntity<List<EmployeeResponseDto>> getEmployeeByDepartment(@PathVariable String dept) {
+	    List<EmployeeResponseDto> list = service.getEmployeeByDepartment(dept);
 	    
+	    if (list.isEmpty()) {
+	        return ResponseEntity.noContent().build();
+	    }
+	    return ResponseEntity.ok(list);
+	}
+	
+	
+	@GetMapping("/above/{amount}")
+	public ResponseEntity<List<EmployeeResponseDto>> getEmployeeSalaryGreaterThan(@PathVariable Double amount) {
+	    List<EmployeeResponseDto> list = service.getEmployeeSalaryGreaterThan(amount);
+	    
+	    if (list.isEmpty()) {
+	        return ResponseEntity.noContent().build();
+	    }
+	    return ResponseEntity.ok(list);
+	}
+	
+	@GetMapping("/average-salary")
+	public ResponseEntity<List<EmployeeResponseDto>> getEmployeeWithAvgSalary() {
+	    List<EmployeeResponseDto> list = service.getEmployeesWithAvgSalary();
+	    
+	    if (list.isEmpty()) {
+	        return ResponseEntity.noContent().build();
+	    }
 	    return ResponseEntity.ok(list);
 	}
 }
