@@ -1,6 +1,7 @@
 package com.info.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -109,6 +110,23 @@ public class EmployeeServiceImpl implements EmployeeService{
 	        return res;
 	    });
 	}
+
+	@Override
+	public List<EmployeeResponseDto> getHighestPaidEmployees() {
+	    List<Employee> employees = repository.getHighestPaidEmployees();
+	    
+	    return employees.stream()
+	        .map(emp -> {
+	            EmployeeResponseDto dto = new EmployeeResponseDto();
+	            dto.setId(emp.getId());
+	            dto.setName(emp.getName());
+	            dto.setDepartment(emp.getDepartment());
+	            dto.setSalary(emp.getSalary());
+	            return dto;
+	        })
+	        .collect(Collectors.toList());
+	}
+
 
 	
 }

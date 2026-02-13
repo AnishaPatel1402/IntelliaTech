@@ -20,5 +20,7 @@ public interface EmployeeService {
 	public EmployeeResponseDto getEmployeeById(int id);
 	
 	public Page<EmployeeResponseDto> getAllEmployees(Pageable pageable);
+	
+	public List<EmployeeResponseDto> getHighestPaidEmployees();
 
 }

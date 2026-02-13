@@ -63,4 +63,15 @@ public class EmployeeController {
 	    Page<EmployeeResponseDto> employees = service.getAllEmployees(pageable);
 	    return ResponseEntity.ok(employees);
 	}
+	
+	@GetMapping("/highest-salary")
+	public ResponseEntity<List<EmployeeResponseDto>> getHighestPaid() {
+	    List<EmployeeResponseDto> list = service.getHighestPaidEmployees();
+	    
+	    if (list.isEmpty()) {
+	        return ResponseEntity.noContent().build();
+	    }
+	    
+	    return ResponseEntity.ok(list);
+	}
 }
