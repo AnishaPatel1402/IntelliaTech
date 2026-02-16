@@ -54,6 +54,7 @@ public class ProductServiceImpl implements ProductService {
 
         return productRepository.findAll()
                 .stream()
+                .filter(product -> product.getStock() > 0)
                 .map(this::mapToDTO)
                 .toList();
     }
