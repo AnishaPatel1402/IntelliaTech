@@ -8,6 +8,7 @@ import com.info.ordermangmentsystem.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -32,6 +33,8 @@ public class ProductServiceImpl implements ProductService {
         product.setName(request.getName());
         product.setPrice(request.getPrice());
         product.setStock(request.getStock());
+        product.setCreatedAt(LocalDateTime.now());
+        product.setUpdatedAt(LocalDateTime.now());
 
         Product saved = productRepository.save(product);
 
@@ -66,6 +69,7 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new ProductNotFoundException("Product not found"));
 
         product.setStock(newStock);
+        product.setUpdatedAt(LocalDateTime.now());
 
         return mapToDTO(productRepository.save(product));
     }

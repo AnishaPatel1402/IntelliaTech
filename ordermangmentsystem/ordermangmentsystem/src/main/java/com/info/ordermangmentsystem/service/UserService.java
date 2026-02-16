@@ -1,8 +1,16 @@
 package com.info.ordermangmentsystem.service;
 
-import org.springframework.stereotype.Service;
+import com.info.ordermangmentsystem.dto.UserRequestDTO;
+import com.info.ordermangmentsystem.dto.UserResponseDTO;
 
-@Service
-public class UserService {
+import java.util.List;
 
+public interface UserService {
+
+    UserResponseDTO createUser(UserRequestDTO request);
+
+    UserResponseDTO getUserById(Integer id);
+
+    List<UserResponseDTO> getAllUsers();
 }
+
