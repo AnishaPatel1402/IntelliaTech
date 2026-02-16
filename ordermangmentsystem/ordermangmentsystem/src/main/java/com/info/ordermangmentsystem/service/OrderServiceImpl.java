@@ -37,9 +37,7 @@ public class OrderServiceImpl implements OrderService{
             }
             return idempotencyStore.computeIfAbsent(idempotencyKey, key -> {
 
-                User user = userRepository.findById(userId)
-                        .orElseThrow(() ->
-                                new UserNotFoundException("User not found"));
+                User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));
 
                 Cart cart = cartRepository.findByUser(user)
                         .orElseThrow(() ->

@@ -28,9 +28,7 @@ public class CartController {
     }
 
     @DeleteMapping("/remove")
-    public ResponseEntity<CartResponseDTO> removeCartItem(
-            @RequestParam Integer userId,
-            @RequestParam Integer productId) {
+    public ResponseEntity<CartResponseDTO> removeCartItem(@RequestParam Integer userId, @RequestParam Integer productId) {
 
         return ResponseEntity.ok(
                 cartService.removeCartItem(userId, productId)
