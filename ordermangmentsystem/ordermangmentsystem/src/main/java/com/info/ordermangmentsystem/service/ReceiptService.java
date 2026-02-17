@@ -57,7 +57,7 @@ public class ReceiptService {
 
 
         invoice.setPaymentStatus("PAID");
-        invoiceRepository.save(invoice);
+//        invoiceRepository.save(invoice);
 
         return buildResponse(savedReceipt);
     }
