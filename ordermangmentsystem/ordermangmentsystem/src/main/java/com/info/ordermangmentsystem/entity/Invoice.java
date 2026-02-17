@@ -36,6 +36,7 @@ public class Invoice {
     private Double taxAmount;
     private Double finalAmount;
 
+
     private String paymentStatus;
 }
 

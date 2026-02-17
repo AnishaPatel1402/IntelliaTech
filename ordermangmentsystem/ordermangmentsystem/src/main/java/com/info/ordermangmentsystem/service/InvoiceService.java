@@ -24,16 +24,21 @@ public class InvoiceService {
     private final OrderRepository orderRepository;
 
     public InvoiceResponseDTO generateInvoice(Integer orderId){
+
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        if (order.getOrderItems().isEmpty()) {
+            throw new RuntimeException("Cannot generate invoice for empty order");
+        }
+
+
         Optional<Invoice> existingInvoice =
                 invoiceRepository.findByOrderId(orderId);
 
         if (existingInvoice.isPresent()) {
             return buildResponse(existingInvoice.get());
         }
-
-
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
 
         Invoice invoice = new Invoice();
 
