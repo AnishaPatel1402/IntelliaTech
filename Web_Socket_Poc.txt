@@ -1,0 +1,124 @@
+What is WebSocket?
+
+WebSocket is a communication protocol that enables full-duplex (two-way), real-time communication between a client (like a browser) and a server over a single, long-lived connection.
+
+Unlike HTTP (where the client sends a request and waits for a response), WebSocket keeps the connection open, so both client and server can send messages anytime.
+
+WebSocket creates a persistent, two-way connection between client and server.
+
+Unlike HTTP:
+
+HTTP → Request → Response → Close
+
+WebSocket → Connect once → Communicate anytime
+
+Key Features
+Full-Duplex: Both client and server can send and receive data simultaneously.
+Persistent Connection: Once established, the connection remains open until explicitly closed by either side.
+Low Overhead: After an initial handshake, data is sent in lightweight "frames" without the heavy headers required for every HTTP request.
+Stateful: The server maintains an active connection state for each client, unlike the stateless nature of HTTP.
+
+
+How It Works
+Handshake: The connection begins as a standard HTTP request. The client sends a "GET" request with an Upgrade: websocket header.
+Upgrade: If the server supports the protocol, it responds with an HTTP 101 Switching Protocols status code.
+Bidirectional Flow: The protocol switches from HTTP to WebSocket. Both sides can now exchange text or binary data freely 
+
+
+
+Comparison with HTTP
+Feature 	HTTP	                                                WebSocket
+Communication	Unidirectional (Client requests, Server responds)	Bidirectional (Full-duplex)
+Connection	Temporary (Closes after response)	                Persistent (Stays open)
+Overhead	High (Headers with every request)	                Low (Lightweight frames)
+Real-time	Mimicked via Polling/Long Polling	                Truly Real-time
+
+
+
+What is WebSocket Handshake?
+Handshake is the initial process where the client asks the server to upgrade from HTTP to WebSocket.
+It is called a “handshake” because both client and server agree to switch protocols
+
+WebSocket handshake is an HTTP-based upgrade request where the client asks the server to switch from HTTP to WebSocket protocol. Once the server accepts, the connection becomes persistent and full-duplex.
+
+
+What is STOMP?
+STOMP is a messaging protocol used over WebSocket that provides structured messaging with destinations, headers, and subscriptions. It simplifies building chat and pub-sub systems in Spring Boot.
+Simple Text Oriented Messaging Protocol
+What Does It Do?
+WebSocket only sends raw data.
+STOMP adds:
+Message structure
+Headers
+Topics
+Subscriptions
+It makes messaging easier.
+
+
+
+
+What is SockJS?
+Some browsers or firewalls block WebSocket.
+SockJS provides a fallback mechanism.
+SockJS is a JavaScript library that provides fallback options when WebSocket is not supported, ensuring real-time communication still works.
+
+
+
+Difference Between WebSocket & REST
+Feature			WebSocket		REST
+Protocol		WebSocket		HTTP
+Connection		Persistent		Stateless
+Communication		Two-way	        	Request → Response
+Speed	     		Real-time		Slower for frequent updates
+Best For		Chat, live updates	CRUD operations
+
+--------------------------------------------------------------------------------------------------------------
+
+Implementing web socket in spring boot
+
+Client (HTML + JS)
+↓
+SockJS
+↓
+STOMP
+↓
+Spring Boot WebSocket Endpoint
+↓
+Simple Broker (/topic)
+↓
+Broadcast to all clients
+
+1. Add the maven dependency of spring web socket 
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-websocket</artifactId>
+</dependency>
+
+2. Create web socket configuration file 
+   annotations: @configuration, @EnableWebSocketMessageBroker
+3. Implement the WebSocketMessageBrokerConfigurer 
+	/ws → WebSocket endpoint
+
+	/topic → where clients subscribe
+
+	/app → where clients send messages
+
+	withSockJS() → fallback support
+
+
+//flow of application 
+Client
+↓ CONNECT
+WebSocket Endpoint
+↓
+STOMP Session Created
+↓
+Client SUBSCRIBE to /topic/public
+↓
+Client SEND to /app/chat.send
+↓
+Controller Handles Message
+↓
+Broker Routes to /topic/public
+↓
+All Subscribers Receive Message
