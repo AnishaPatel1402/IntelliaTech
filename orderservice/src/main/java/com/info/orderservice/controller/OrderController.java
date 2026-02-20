@@ -21,7 +21,7 @@ public class OrderController {
     public Order createOrder(@RequestBody Order order) {
         order.setStatus("CREATED");
         Order savedOrder = orderRepository.save(order);
-        orderProducer.sendOrderEvent(savedOrder.getId().toString());
+        orderProducer.sendOrderEvent("created order " + savedOrder.getId().toString());
         return savedOrder;
     }
 

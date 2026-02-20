@@ -1,1 +1,215 @@
-Kafka
+What is Kafka?
+
+Apache Kafka is a distributed event streaming platform.
+
+It allows high-throughput, fault-tolerant, real-time data streaming between systems.
+
+Used for building data pipelines, messaging, and real-time applications.
+
+Key features:
+
+High throughput: Handles millions of messages per second.
+
+Scalable: Horizontal scaling with multiple brokers.
+
+Durable: Data persisted on disk with replication.
+
+Fault-tolerant: Handles broker failures without data loss.
+
+
+
+Kafka Architecture
+Main Components
+
+Producer
+
+Application that sends messages to Kafka topics.
+
+Example: Your chat app sending messages.
+
+Consumer
+
+Application that reads messages from Kafka topics.
+
+Example: Chat client showing messages in real-time.
+
+Topic
+
+Logical channel to store messages.
+
+Divided into partitions for parallelism and scalability.
+
+Partition
+
+Each topic can have multiple partitions.
+
+Provides ordering guarantees within a partition.
+
+Enables parallel consumption.
+
+Broker
+
+Kafka server that stores topics and serves producers/consumers.
+
+Multiple brokers form a Kafka cluster.
+
+KRaft Mode (Kafka Raft)
+
+Kafka’s new mode without ZooKeeper (used in latest versions).
+
+Handles metadata management internally using Raft consensus.
+
+Simplifies deployment for PoC and small setups.
+
+
+
+
+Kafka Flow
+Producer → Topic → Partition → Broker → Consumer
+
+Producer sends a message to a topic.
+
+Kafka stores the message in a partition on a broker.
+
+Consumers read messages in order from partitions.
+
+
+
+
+
+3. Kafka Messaging Models
+
+Pub/Sub (Broadcast to multiple consumers)
+
+All consumers subscribed to a topic receive messages.
+
+Point-to-Point (Direct to one consumer group)
+
+Each message is consumed by one consumer in the group.
+
+
+
+Real-time messaging: Instant delivery of chat messages.
+
+Scalability: Can handle hundreds of users simultaneously.
+
+Reliability: Messages are persisted and can be replayed if needed.
+
+Loose coupling: Producers and consumers work independently.
+
+KRaft mode: Easy to deploy in Docker for PoC without ZooKeeper.
+
+
+
+Feature	                             Description
+High throughput	                     Millions of messages/sec with low latency
+Durability	                     Messages persisted on disk with replication
+Fault-tolerance	                     Automatic failover with replication
+Real-time streaming	             Immediate message delivery
+Scalability	                     Add brokers or partitions dynamically
+Replay & retention	             Messages can be re-read from any point
+
+
+-----------------------------------------------------------------------------------------------------
+Steps of running kafka using docker 
+
+Step 1: Prepare your folder
+
+Create a folder:
+
+C:\Users\annip\Desktop\kafka-kraft
+
+Inside this folder, create a file named:
+
+docker-compose.yml
+Step 2: Add this content to docker-compose.yml
+version: "3.8"
+
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+Step 3: Start Kafka container
+
+Open Command Prompt, navigate to the folder:
+
+cd C:\Users\annip\Desktop\kafka-kraft
+docker-compose up -d
+
+Check the container:
+
+docker ps
+
+You should see a container named kafka running with port 9092.
+
+Step 4: Exec into Kafka container
+docker exec -it kafka bash
+
+Test CLI tools:
+
+kafka-topics --help
+
+If you see the help message, CLI is ready ✅
+
+Step 5: Create a topic
+kafka-topics --create --topic test-topic --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
+
+Check the topic:
+
+kafka-topics --list --bootstrap-server localhost:9092
+
+Output should show:
+
+test-topic
+Step 6: Produce a message
+kafka-console-producer --topic test-topic --bootstrap-server localhost:9092
+
+Type a message, e.g.:
+
+Hello Kafka!
+
+Press Enter.
+
+Press Ctrl+C to exit producer when done.
+
+Step 7: Consume messages
+
+Open another terminal, exec into Kafka container again:
+
+docker exec -it kafka bash
+
+Run consumer:
+
+kafka-console-consumer --topic test-topic --bootstrap-server localhost:9092 --from-beginning
+
+You should see:
+
+Hello Kafka!
+
+At this point, your Kafka setup is fully working — you can create topics, produce messages, and consume messages.
+
+Optional: Clean up
+
+To stop Kafka:
+
+docker-compose down
