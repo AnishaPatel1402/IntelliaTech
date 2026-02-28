@@ -11,6 +11,7 @@ public class KafkaService {
     private KafkaTemplate<String, Student> kafkaTemplate;
     public String sendMessage(Student stud){
         kafkaTemplate.send("student-topic", "student1", stud);
+        System.out.println(stud);
         return "Student data sent to kafka successfully";
     }
 }
